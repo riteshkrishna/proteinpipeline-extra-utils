@@ -20,7 +20,7 @@ import java.util.Scanner;
  */
 public class Rename_DatFileToMgfName {
 	
-	HashMap<String, String> indexer;
+	HashMap<File, String> indexer = new HashMap<File, String>();
 	
 	/**
 	 * 
@@ -53,22 +53,39 @@ public class Rename_DatFileToMgfName {
 		
 		for(int i = 0; i < datfiles.length; i++){
 			
-			 Scanner scanner = new Scanner(new FileReader(datfiles[i]));
-             
-			 try{
-				 while(scanner.hasNextLine()){
-					 String line = scanner.nextLine();
-					 if(line.contains("FILE=")){
-						 String[] keyVal = line.split("=");
-						 if(keyVal[0].contains("FILE"))
-							 indexer.put(datfiles[i].getName(), keyVal[1]);
-						 break;
+			Scanner scanner = new Scanner(new FileReader(datfiles[i]));
+			while(scanner.hasNextLine()){
+				 String line = scanner.nextLine();
+				 if(line.contains("FILE=")){
+					 String[] keyVal = line.split("=");
+					 if(keyVal[0].contains("FILE")){
+						 
+						 // Parse the path in keyVal[1] and extract the file name
+						 String pathToParse = keyVal[1];
+						 String fileName1 = "";
+                         int lastSlashIndex = pathToParse.lastIndexOf("\\");
+                         if(lastSlashIndex > -1){
+                                 fileName1 = pathToParse.substring(lastSlashIndex + 1);
+                         }else {
+                                 fileName1 = pathToParse;
+                         }
+                         // Deal with the extension
+                         int extDotIndex = fileName1.indexOf(".");
+                         if(extDotIndex > -1){
+                             fileName1 = fileName1.substring(0,extDotIndex);
+                         }
+                         else{
+                             fileName1 = fileName1;
+                         }
+                         // Add to the HashMap with correct path
+                         indexer.put(datfiles[i], datfiles[i].getParent().concat("\\" + fileName1 + ".dat"));
+                         break;
 					 }
-				 }
-             }finally{
-                     scanner.close();
-             }
+				}
+			}        
+			scanner.close();
 		}
+		
 	}
 	
 	/**
@@ -76,12 +93,13 @@ public class Rename_DatFileToMgfName {
 	 */
 	void renameDatFilesToMgfNames(){
 		
-		Iterator<String> datfiles = indexer.keySet().iterator();
+		Iterator<File> datfiles = indexer.keySet().iterator();
 		while(datfiles.hasNext()){
-			String file = datfiles.next();
-			File f = new File(file);
-			f.renameTo(new File(indexer.get(file)));
+			File file = datfiles.next();
+			boolean result = file.renameTo(new File(indexer.get(file)));
+			System.out.println("Success - " + result);
 		}
+		
 	}
 	
 	/**
