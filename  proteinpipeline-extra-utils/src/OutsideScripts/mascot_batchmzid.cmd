@@ -1,0 +1,5 @@
+REM to run on the Mascot server to use msparser to convert dat files to mzidentml format.
+
+for %%f in (*.dat) do D:\inetpub\mascot\cgi\export_dat_2_mar16.pl file=D:/TestSpace/tmp/%%f do_export=1 export_format=mzIdentML _ignoreionsscorebelow 0 _server_mudpit_switch=0.001 _requireboldred=0 _showallfromerrortolerant=0 _onlyerrortolerant=0 _noerrortolerant=0 show_same_sets=1 _showsubsets=1 _sigthreshold=0.05 report=0 unigene=0 _show_decoy_report=0 search_master=1 show_format=1 show_header=1 show_masses=1 show_params=1 show_mods=1 show_decoy=0 show_unassigned=1 protein_master=1 prot_desc=1 prot_score=1 prot_expect=0.05 prot_mass=1 prot_matches=1 prot_cover=1 prot_len=1 prot_pi=0 prot_tax_str=1 prot_tax_id=1 prot_seq=0 prot_empai=1  prot_quant=1 peptide_master=1  pep_exp_mr=1 pep_exp_z=1 pep_calc_mr=1 pep_delta=1 pep_start=1 pep_end=1 pep_miss=1 pep_score=1 pep_homol=1 pep_ident=1 pep_expect=1 pep_rank=1 pep_seq=1 pep_frame=1 pep_var_mod=1 pep_num_match=1 pep_scan_title=1 pep_quant=0  query_all=0 > D:\msparserTest\%%f.mzid 
+pause
+
