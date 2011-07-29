@@ -21,7 +21,7 @@ public class ProteinAmbiguityGrouping {
 	 * @param peptideMap
 	 * @param proteinPeptideMap
 	 */
-	ProteinAmbiguityGrouping(HashMap <String, ArrayList<Peptide>> peptideMap, 
+	public ProteinAmbiguityGrouping(HashMap <String, ArrayList<Peptide>> peptideMap, 
 			HashMap <String, ArrayList<String>> proteinPeptideMap){
 		
 		this.peptideMap = peptideMap;
@@ -32,8 +32,9 @@ public class ProteinAmbiguityGrouping {
 	
 	/**
 	 * 
+	 * @return
 	 */
-	void createAmbiguityGroup(){
+	public HashMap<Integer,ArrayList<String>> createAmbiguityGroup(){
 		
 		Iterator<String> peptides = peptideMap.keySet().iterator();
 		
@@ -103,6 +104,7 @@ public class ProteinAmbiguityGrouping {
 			
 		} // End of while loop
 		
+		return pags;
 	}
 	
 	/**
@@ -148,5 +150,13 @@ public class ProteinAmbiguityGrouping {
 		return groups;
 	}
 	
+	
+	/**
+	 * The test function..
+	 * @param args
+	 */
+	public static void main(String [] args){
+		
+	}
 
 }
