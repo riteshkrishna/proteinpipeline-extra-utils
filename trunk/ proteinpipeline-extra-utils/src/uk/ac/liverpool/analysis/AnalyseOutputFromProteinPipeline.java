@@ -396,63 +396,6 @@ public class AnalyseOutputFromProteinPipeline {
 		/***************  Create PAGS **********************/
 		ap.makeProteinGroups();
 		
-		/*
-		// Remove Rnd from PeptideMap and ProteinPeptideMap
-		HashMap<String,ArrayList<Peptide>> cleanPeptideMap = new HashMap<String,ArrayList<Peptide>>();
-		
-		Iterator <String> pepkey = ap.peptideMap.keySet().iterator();
-	    while(pepkey.hasNext()){
-	    	String pepseq = pepkey.next();
-	    	ArrayList<Peptide> pepColl = ap.peptideMap.get(pepseq);
-	    	
-	    	ArrayList<Peptide> cleanPepColl = new ArrayList<Peptide>();
-	  
-	    	for(int i = 0 ; i < pepColl.size(); i++){
-	    		if(!pepColl.get(i).protAccn.contains(decoyString)){
-	    			cleanPepColl.add(pepColl.get(i));
-	    		}
-	    	}
-	    	if(!cleanPepColl.isEmpty())
-	    		cleanPeptideMap.put(pepseq, cleanPepColl);
-	    }
-		////////////
-		ProteinAmbiguityGrouping pag = new ProteinAmbiguityGrouping(ap.peptideMap,ap.proteinPeptideMap);
-		HashMap<Integer,ArrayList<String>> pagsFormed = pag.createAmbiguityGroup();
-		
-		System.out.println("Total Pags found - " + pagsFormed.size());
-		Iterator<Integer> pagKeys = pagsFormed.keySet().iterator();
-		while(pagKeys.hasNext()){
-			Integer key = pagKeys.next();
-			ArrayList<String> values = pagsFormed.get(key);
-			
-			System.out.println("\n Pag -> " + key.intValue() +"\n");
-			for(int i=0;i<values.size(); i++){
-				System.out.print(values.get(i) + "\t");
-			}
-		}
-		
-		// Dump the PeptideMap
-		try {
-		    BufferedWriter out = new BufferedWriter(new FileWriter("temp.txt"));
-		    
-		    Iterator <String> pepkey = ap.peptideMap.keySet().iterator();
-		    while(pepkey.hasNext()){
-		    	String pepseq = pepkey.next();
-		    	ArrayList<Peptide> pepColl = ap.peptideMap.get(pepseq);
-		    	if(pepColl == null){
-		    		System.out.println("null ->" + pepseq);
-		    		continue;
-		    	}
-		    	out.write("\n\nPepSeq = " + pepseq + "\n");
-		    	for(int i=0 ; i < pepColl.size(); i++){
-		    		out.write(pepColl.get(i).protAccn + "\t");
-		    	}
-		    }
-		    out.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		*/
 		System.out.println("Done..");
 	}
 }
