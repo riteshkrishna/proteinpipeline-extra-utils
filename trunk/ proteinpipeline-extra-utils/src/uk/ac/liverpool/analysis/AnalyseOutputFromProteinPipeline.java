@@ -1,12 +1,16 @@
 package uk.ac.liverpool.analysis;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Vector;
+
+import uk.ac.liverpool.inference.ProteinAmbiguityGrouping;
 
 /* This program is for parsing the output produced by Proteomics Pipeline for analysis of results. The output is produced
  * in the following manner with \t delimiter and 15 columns in total.
@@ -39,6 +43,7 @@ public class AnalyseOutputFromProteinPipeline {
 	String wholeSummaryFile;
 	double fdrThreshold;
 	String delimiter;
+	String decoyString; 
 	
 	HashMap <String, ArrayList<String>> proteinPeptideMap;
 	HashMap <String, ArrayList<Double>> proteinScoreMap;
@@ -51,10 +56,11 @@ public class AnalyseOutputFromProteinPipeline {
 	 * @param pipelineSummaryFile - The tab delimited summary file from pipeline
 	 * @param fdrThreshold - The FDR threshold for filtering of result
 	 */
-	AnalyseOutputFromProteinPipeline(String pipelineSummaryFile, double fdrThreshold, String delimiter) {
+	AnalyseOutputFromProteinPipeline(String pipelineSummaryFile, double fdrThreshold, String delimiter,String decoyString) {
 		wholeSummaryFile = new String(pipelineSummaryFile);
 		this.fdrThreshold = fdrThreshold;
 		this.delimiter = delimiter;
+		this.decoyString = decoyString;
 		
 		proteinPeptideMap = new HashMap <String, ArrayList<String>>();
 		proteinScoreMap = new HashMap <String, ArrayList<Double>>();
@@ -181,10 +187,9 @@ public class AnalyseOutputFromProteinPipeline {
 	
 	/**
 	 * Find total true protein accessions
-	 * @param decoyString - String to identify decoy and true accessions
 	 * @return - ArrayList of true protein accessions 
 	 */
-	public ArrayList<String> getTrueProteins(String decoyString){
+	public ArrayList<String> getTrueProteins(){
 		
 		ArrayList<String> totalTrueProteins = new ArrayList<String>();
 		
@@ -200,10 +205,9 @@ public class AnalyseOutputFromProteinPipeline {
 
 	/**
 	 * Find total decoy protein accessions
-	 * @param decoyString - String to identify decoy and true accessions
 	 * @return - ArrayList of true protein accessions 
 	 */
-	public ArrayList<String> getDecoyProteins(String decoyString){
+	public ArrayList<String> getDecoyProteins(){
 		
 		ArrayList<String> totalDecoyProteins = new ArrayList<String>();
 		
@@ -280,10 +284,80 @@ public class AnalyseOutputFromProteinPipeline {
 	}
 	
 	
-	// Use peptideMap to find how many proteins share a peptide
+	/**
+	 * 
+	 */
 	
 	public void makeProteinGroups(){
-		// TODO
+		
+		// Remove decoy proteins from PeptideMap
+		HashMap<String,ArrayList<Peptide>> cleanPeptideMap = new HashMap<String,ArrayList<Peptide>>();
+		
+		Iterator <String> pepkey = this.peptideMap.keySet().iterator();
+	    while(pepkey.hasNext()){
+	    	String pepseq = pepkey.next();
+	    	ArrayList<Peptide> pepColl = this.peptideMap.get(pepseq);
+	    	
+	    	ArrayList<Peptide> cleanPepColl = new ArrayList<Peptide>();
+	    	HashMap<String,String> seenAccessions = new HashMap<String,String>();
+	    	
+	    	for(int i = 0 ; i < pepColl.size(); i++){
+	    		String protAccn = pepColl.get(i).protAccn;
+	    		if(!protAccn.contains(this.decoyString) && !seenAccessions.containsKey(protAccn)){
+	    				seenAccessions.put(protAccn, "");
+	    				cleanPepColl.add(pepColl.get(i));
+	    		}	
+	    	}
+	    	if(!cleanPepColl.isEmpty())
+	    		cleanPeptideMap.put(pepseq, cleanPepColl);
+	    }
+		////////////
+		try{
+			BufferedWriter out_pag = new BufferedWriter(new FileWriter("PAG_FOUND.txt"));
+		
+			ProteinAmbiguityGrouping pag = new ProteinAmbiguityGrouping(cleanPeptideMap,this.proteinPeptideMap);
+			HashMap<Integer,ArrayList<String>> pagsFormed = pag.createAmbiguityGroup();
+		
+			out_pag.write("Total Pags found - " + pagsFormed.size());
+			
+			Iterator<Integer> pagKeys = pagsFormed.keySet().iterator();
+			while(pagKeys.hasNext()){
+				Integer key = pagKeys.next();
+				ArrayList<String> values = pagsFormed.get(key);
+			
+				out_pag.write("\n Pag -> " + key.intValue() +"\n");
+				for(int i=0;i<values.size(); i++){
+					out_pag.write(values.get(i) + "\t");
+				}
+			}
+			
+			out_pag.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		// Dump the PeptideMap
+		try {
+		    BufferedWriter out = new BufferedWriter(new FileWriter("temp.txt"));
+		    
+		    Iterator <String> pepList = cleanPeptideMap.keySet().iterator();
+		    while(pepList.hasNext()){
+		    	String pepseq = pepList.next();
+		    	ArrayList<Peptide> pepColl = cleanPeptideMap.get(pepseq);
+		    	if(pepColl == null){
+		    		System.out.println("null ->" + pepseq);
+		    		continue;
+		    	}
+		    	out.write("\n\nPepSeq = " + pepseq + "\n");
+		    	for(int i=0 ; i < pepColl.size(); i++){
+		    		out.write(pepColl.get(i).protAccn + "\t");
+		    	}
+		    }
+		    out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	
@@ -299,7 +373,7 @@ public class AnalyseOutputFromProteinPipeline {
 		String delimiter = args[2];
 		String decoyString = args[3];
 		
-		AnalyseOutputFromProteinPipeline ap = new AnalyseOutputFromProteinPipeline(pipelineSummaryFile, fdrThreshold, delimiter);
+		AnalyseOutputFromProteinPipeline ap = new AnalyseOutputFromProteinPipeline(pipelineSummaryFile, fdrThreshold, delimiter,decoyString);
 		ap.createMaps();
 		
 		/********* Queries ***************/
@@ -310,16 +384,75 @@ public class AnalyseOutputFromProteinPipeline {
 		System.out.println( "Total Proteins Found = " + ap.getNumberOfUniqueProteins());
 		
 		// Get Number of True proteins
-		System.out.println("Total TRUE Proteins Found = " + ap.getTrueProteins(decoyString).size());
+		System.out.println("Total TRUE Proteins Found = " + ap.getTrueProteins().size());
 		
 		// Get Number of Decoy proteins
-		System.out.println( "Total DECOY Proteins Found = " + ap.getDecoyProteins(decoyString).size());
+		System.out.println( "Total DECOY Proteins Found = " + ap.getDecoyProteins().size());
 		
 		System.out.println("Total N-Terminals found = " + ap.getN_TerminalPeptides().get(0).size());
 		
 		System.out.println(" Total proteins with UNIQUE peptides found = " + ap.getProteinsWithUniquePeptideSequences().size());
 		
+		/***************  Create PAGS **********************/
+		ap.makeProteinGroups();
 		
+		/*
+		// Remove Rnd from PeptideMap and ProteinPeptideMap
+		HashMap<String,ArrayList<Peptide>> cleanPeptideMap = new HashMap<String,ArrayList<Peptide>>();
 		
+		Iterator <String> pepkey = ap.peptideMap.keySet().iterator();
+	    while(pepkey.hasNext()){
+	    	String pepseq = pepkey.next();
+	    	ArrayList<Peptide> pepColl = ap.peptideMap.get(pepseq);
+	    	
+	    	ArrayList<Peptide> cleanPepColl = new ArrayList<Peptide>();
+	  
+	    	for(int i = 0 ; i < pepColl.size(); i++){
+	    		if(!pepColl.get(i).protAccn.contains(decoyString)){
+	    			cleanPepColl.add(pepColl.get(i));
+	    		}
+	    	}
+	    	if(!cleanPepColl.isEmpty())
+	    		cleanPeptideMap.put(pepseq, cleanPepColl);
+	    }
+		////////////
+		ProteinAmbiguityGrouping pag = new ProteinAmbiguityGrouping(ap.peptideMap,ap.proteinPeptideMap);
+		HashMap<Integer,ArrayList<String>> pagsFormed = pag.createAmbiguityGroup();
+		
+		System.out.println("Total Pags found - " + pagsFormed.size());
+		Iterator<Integer> pagKeys = pagsFormed.keySet().iterator();
+		while(pagKeys.hasNext()){
+			Integer key = pagKeys.next();
+			ArrayList<String> values = pagsFormed.get(key);
+			
+			System.out.println("\n Pag -> " + key.intValue() +"\n");
+			for(int i=0;i<values.size(); i++){
+				System.out.print(values.get(i) + "\t");
+			}
+		}
+		
+		// Dump the PeptideMap
+		try {
+		    BufferedWriter out = new BufferedWriter(new FileWriter("temp.txt"));
+		    
+		    Iterator <String> pepkey = ap.peptideMap.keySet().iterator();
+		    while(pepkey.hasNext()){
+		    	String pepseq = pepkey.next();
+		    	ArrayList<Peptide> pepColl = ap.peptideMap.get(pepseq);
+		    	if(pepColl == null){
+		    		System.out.println("null ->" + pepseq);
+		    		continue;
+		    	}
+		    	out.write("\n\nPepSeq = " + pepseq + "\n");
+		    	for(int i=0 ; i < pepColl.size(); i++){
+		    		out.write(pepColl.get(i).protAccn + "\t");
+		    	}
+		    }
+		    out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		*/
+		System.out.println("Done..");
 	}
 }
