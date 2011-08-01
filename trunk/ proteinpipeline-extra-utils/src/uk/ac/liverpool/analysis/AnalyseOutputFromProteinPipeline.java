@@ -158,6 +158,8 @@ public class AnalyseOutputFromProteinPipeline {
 				peptideColl.add(p);
 				peptideMap.put(pepSeq, peptideColl);
 				
+				prevProtein = protAccn;
+				prevProteinScore = protScore;
 			}	
 			
 			scanner.close();
