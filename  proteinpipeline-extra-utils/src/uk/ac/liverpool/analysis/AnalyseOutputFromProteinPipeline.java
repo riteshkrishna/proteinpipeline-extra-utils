@@ -114,6 +114,7 @@ public class AnalyseOutputFromProteinPipeline {
 				 if (fdrScore >= this.fdrThreshold)
 					 continue;
 				 
+				 
 				 // Fill the maps
 				 
 				 // Protein - Peptide Map
@@ -290,7 +291,7 @@ public class AnalyseOutputFromProteinPipeline {
 	 * 
 	 */
 	
-	public void makeProteinGroups(){
+	public void makeProteinGroups(String pagListOutputFile){
 		
 		// Remove decoy proteins from PeptideMap
 		HashMap<String,ArrayList<Peptide>> cleanPeptideMap = new HashMap<String,ArrayList<Peptide>>();
@@ -315,7 +316,7 @@ public class AnalyseOutputFromProteinPipeline {
 	    }
 		////////////
 		try{
-			BufferedWriter out_pag = new BufferedWriter(new FileWriter("PAG_FOUND.txt"));
+			BufferedWriter out_pag = new BufferedWriter(new FileWriter(pagListOutputFile));
 		
 			ProteinAmbiguityGrouping pag = new ProteinAmbiguityGrouping(cleanPeptideMap,this.proteinPeptideMap);
 			HashMap<Integer,ArrayList<String>> pagsFormed = pag.createAmbiguityGroup();
@@ -340,7 +341,7 @@ public class AnalyseOutputFromProteinPipeline {
 		
 		// Dump the PeptideMap
 		try {
-		    BufferedWriter out = new BufferedWriter(new FileWriter("temp.txt"));
+		    BufferedWriter out = new BufferedWriter(new FileWriter(pagListOutputFile + "_Peptide_Dump.txt"));
 		    
 		    Iterator <String> pepList = cleanPeptideMap.keySet().iterator();
 		    while(pepList.hasNext()){
@@ -362,6 +363,31 @@ public class AnalyseOutputFromProteinPipeline {
 		
 	}
 	
+
+	/**
+	 * 
+	 * @param trueProteins
+	 * @param trueProteinListOutputFile
+	 */
+	public void writeProteinsToFile(ArrayList<String> trueProteins, String trueProteinListOutputFile){
+		try{
+			BufferedWriter out_prot = new BufferedWriter(new FileWriter(trueProteinListOutputFile));
+			
+			for(String protein : trueProteins){
+				ArrayList<String> peptides = proteinPeptideMap.get(protein);
+				
+				out_prot.write("\n" + protein);
+				for(int i = 0; i < peptides.size(); i++){
+					String peptide = peptides.get(i);
+					out_prot.write("\t" + peptide);
+				}
+			}
+			
+			out_prot.close();
+		}catch(Exception e){
+			
+		}
+	}
 	
 	/**
 	 * The test function..
@@ -378,7 +404,7 @@ public class AnalyseOutputFromProteinPipeline {
 		AnalyseOutputFromProteinPipeline ap = new AnalyseOutputFromProteinPipeline(pipelineSummaryFile, fdrThreshold, delimiter,decoyString);
 		ap.createMaps();
 		
-		/********* Queries ***************/
+		/******************************** Queries **************************************************/
 		
 		System.out.println("Total unique peptides found = " + ap.getNumberOfUniquePeptides());
 		
@@ -396,8 +422,15 @@ public class AnalyseOutputFromProteinPipeline {
 		System.out.println(" Total proteins with UNIQUE peptides found = " + ap.getProteinsWithUniquePeptideSequences().size());
 		
 		/***************  Create PAGS **********************/
-		ap.makeProteinGroups();
+		String pagListOutputFile = "result/PAG_FOUND_" + Double.toString(fdrThreshold);
+		ap.makeProteinGroups(pagListOutputFile);
 		
 		System.out.println("Done..");
+		
+		/************** Write details of true proteins ***************/
+		String trueProteinListOutputFile = "result/TRUE_PROTEINS_" + Double.toString(fdrThreshold);
+		ap.writeProteinsToFile(ap.getTrueProteins(),  trueProteinListOutputFile);
+		
+		
 	}
 }
