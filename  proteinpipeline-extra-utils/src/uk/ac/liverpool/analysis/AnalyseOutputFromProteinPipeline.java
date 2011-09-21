@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
-import java.util.Vector;
 
 import uk.ac.liverpool.inference.ProteinAmbiguityGrouping;
 
@@ -390,16 +389,40 @@ public class AnalyseOutputFromProteinPipeline {
 	}
 	
 	/**
+	 * Filter proteins based on the minimum number of peptides
+	 * @param noOfPeptideForFilter
+	 * @return
+	 */
+	public ArrayList<String> getTrueProteins_filteredOnNumberOfPeptides(int noOfPeptideForFilter){
+		ArrayList<String> totalTrueProteinsFilteredOnPeptides = new ArrayList<String>();
+		
+		// First find out the true proteins
+		ArrayList<String> totalTrueProteins = getTrueProteins();
+		
+		// Then filter them according to number of Peptides
+		for(String protein : totalTrueProteins){
+			if (proteinPeptideMap.get(protein).size() >= noOfPeptideForFilter)
+				totalTrueProteinsFilteredOnPeptides.add(protein);
+		}
+		return totalTrueProteinsFilteredOnPeptides;
+	}
+	
+	
+	/**
 	 * The test function..
 	 * @param args
 	 * @throws Exception
 	 */
 	public static void main(String [] args) throws Exception{
 		
+		try{
+			
 		String pipelineSummaryFile = args[0];
 		double fdrThreshold = Double.parseDouble(args[1]);
 		String delimiter = args[2];
 		String decoyString = args[3];
+		
+		int noOfPeptideThreshold = 2; // Used for filtering proteins based on number of peptides
 		
 		AnalyseOutputFromProteinPipeline ap = new AnalyseOutputFromProteinPipeline(pipelineSummaryFile, fdrThreshold, delimiter,decoyString);
 		ap.createMaps();
@@ -414,12 +437,16 @@ public class AnalyseOutputFromProteinPipeline {
 		// Get Number of True proteins
 		System.out.println("Total TRUE Proteins Found = " + ap.getTrueProteins().size());
 		
+		// Get Number of Proteins - with atleast 2 peptide criteria
+		System.out.println(" Total TRUE Proteins with 2 PEPTIDE threshold = " + ap.getTrueProteins_filteredOnNumberOfPeptides(noOfPeptideThreshold).size());
+		
 		// Get Number of Decoy proteins
 		System.out.println( "Total DECOY Proteins Found = " + ap.getDecoyProteins().size());
 		
 		System.out.println("Total N-Terminals found = " + ap.getN_TerminalPeptides().get(0).size());
 		
 		System.out.println(" Total proteins with UNIQUE peptides found = " + ap.getProteinsWithUniquePeptideSequences().size());
+		
 		
 		/***************  Create PAGS **********************/
 		String pagListOutputFile = "result/PAG_FOUND_" + Double.toString(fdrThreshold);
@@ -429,8 +456,10 @@ public class AnalyseOutputFromProteinPipeline {
 		
 		/************** Write details of true proteins ***************/
 		String trueProteinListOutputFile = "result/TRUE_PROTEINS_" + Double.toString(fdrThreshold);
-		ap.writeProteinsToFile(ap.getTrueProteins(),  trueProteinListOutputFile);
+		ap.writeProteinsToFile(ap.getTrueProteins_filteredOnNumberOfPeptides(noOfPeptideThreshold),  trueProteinListOutputFile);
 		
-		
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 }
