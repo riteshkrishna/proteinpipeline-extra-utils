@@ -44,18 +44,19 @@ public class AnalyseOutputFromProteinPipeline {
 	String delimiter;
 	String decoyString; 
 	
-	HashMap <String, ArrayList<String>> proteinPeptideMap;
-	HashMap <String, ArrayList<Double>> proteinScoreMap;
-	HashMap <String, ArrayList<String>> spectrumPeptideSeqMap;
-	HashMap <String, ArrayList<Peptide>> peptideMap;
-	
+	public HashMap <String, ArrayList<String>> proteinPeptideMap;
+	public HashMap <String, ArrayList<Double>> proteinScoreMap;
+	public HashMap <String, ArrayList<String>> spectrumPeptideSeqMap;
+	public HashMap <String, ArrayList<Peptide>> peptideMap;
 	
 	/**
 	 * 
-	 * @param pipelineSummaryFile - The tab delimited summary file from pipeline
-	 * @param fdrThreshold - The FDR threshold for filtering of result
+	 * @param pipelineSummaryFile - Summary file for whole dataset
+	 * @param fdrThreshold 		  - FDR to be used for analysis
+	 * @param delimiter			  - \t or , or \w
+	 * @param decoyString		  - Decoy identifier string	
 	 */
-	AnalyseOutputFromProteinPipeline(String pipelineSummaryFile, double fdrThreshold, String delimiter,String decoyString) {
+	public AnalyseOutputFromProteinPipeline(String pipelineSummaryFile, double fdrThreshold, String delimiter,String decoyString) {
 		wholeSummaryFile = new String(pipelineSummaryFile);
 		this.fdrThreshold = fdrThreshold;
 		this.delimiter = delimiter;
@@ -70,7 +71,7 @@ public class AnalyseOutputFromProteinPipeline {
 	/**
 	 * 
 	 */
-	void createMaps(){
+	public void createMaps(){
 		
 		Scanner scanner ;
 		
