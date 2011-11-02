@@ -143,7 +143,7 @@ public class DiscoverPeptidesAcrossDiffernetModels {
 	}
 	
 	/**
-	 * 
+	 * For common peptides 
 	 * @param bucket
 	 */
 	void analyzeBuckets(HashMap<String, ArrayList<ArrayList<Peptide>>> bucket){
@@ -151,9 +151,37 @@ public class DiscoverPeptidesAcrossDiffernetModels {
 		System.out.println(" Total common peptides in bucket = " + totalEntries);
 	}
 	
+	/**
+	 * For unique peptides
+	 * @param bucket
+	 */
 	void analyzeBuckets_unique(HashMap<String, ArrayList<Peptide>> bucket){
 		int totalEntries = bucket.size();
-		System.out.println(" Total common peptides in bucket = " + totalEntries);
+		System.out.println(" Total unique peptides in bucket = " + totalEntries);
+	}
+	
+	
+	void howManyPeptidesWithGivenNumberOfMatchedSpectrum(HashMap<String, ArrayList<Peptide>> uniqueBucket,
+						int noOfSpectrumThreshold){
+		
+		Iterator<String> pepSeqColl = uniqueBucket.keySet().iterator();
+		while(pepSeqColl.hasNext()){
+			String pepSeq = pepSeqColl.next();
+			ArrayList<Peptide> peptideForThisSequence = uniqueBucket.get(pepSeq);
+			
+			HashMap<String,String> specColl = new HashMap<String,String>();	
+			if(peptideForThisSequence != null){
+				for(int i = 0; i < peptideForThisSequence.size(); i++){
+					String specID = peptideForThisSequence.get(i).specID;		
+						specColl.put(specID, "");
+				}
+			}
+			
+			if(specColl.size() >= noOfSpectrumThreshold){
+				System.out.println("Total Spec count = " + specColl.size() + "\t Seq = " + pepSeq);
+			}
+		}
+		
 	}
 	
 	
@@ -189,6 +217,14 @@ public class DiscoverPeptidesAcrossDiffernetModels {
 		
 		System.out.println("\n Bucket - Unique Glimmer ");
 		dp.analyzeBuckets_unique(dp.bucket_unique_glimmer);
+		
+		int spectrumCountThreshold = 2;
+		
+		System.out.println(" Details of extra peptides found  ** Augustus ");
+		dp.howManyPeptidesWithGivenNumberOfMatchedSpectrum(dp.bucket_unique_augustus, spectrumCountThreshold);
+		
+		System.out.println("\n\n\n Details of extra peptides found  ** Glimmer ");
+		dp.howManyPeptidesWithGivenNumberOfMatchedSpectrum(dp.bucket_unique_glimmer, spectrumCountThreshold);
 		
 	}
 }
