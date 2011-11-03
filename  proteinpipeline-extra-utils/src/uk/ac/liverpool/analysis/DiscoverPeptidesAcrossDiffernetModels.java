@@ -1,5 +1,7 @@
 package uk.ac.liverpool.analysis;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -94,7 +96,7 @@ public class DiscoverPeptidesAcrossDiffernetModels {
 				pepColl.add(peptideMap_augustus.get(peptideSeq_official)); // 1 -Augustus
 				pepColl.add(peptideMap_glimmer.get(peptideSeq_official));  // 2 -Glimmer
 				
-				bucket_official_augustus.put(peptideSeq_official, pepColl);
+				bucket_official_augustus_glimmer.put(peptideSeq_official, pepColl);
 			}
 			
 		}
@@ -109,7 +111,7 @@ public class DiscoverPeptidesAcrossDiffernetModels {
 				pepColl.add(peptideMap_augustus.get(peptideSeq_augustus)); // 0 - Augustus
 				pepColl.add(peptideMap_glimmer.get(peptideSeq_augustus));  // 1 -Glimmer
 				
-				bucket_official_glimmer.put(peptideSeq_augustus, pepColl);
+				bucket_agustus_glimmer.put(peptideSeq_augustus, pepColl);
 			}
 		}
 		
@@ -139,30 +141,46 @@ public class DiscoverPeptidesAcrossDiffernetModels {
 				bucket_unique_glimmer.put(peptideSeq, peptideMap_glimmer.get(peptideSeq));
 			}
 		}
-		
+			
 	}
 	
 	/**
-	 * For common peptides 
+	 * For common peptides
+	 * 
 	 * @param bucket
+	 * @param out_prot
+	 * @throws Exception
 	 */
-	void analyzeBuckets(HashMap<String, ArrayList<ArrayList<Peptide>>> bucket){
+	void analyzeBuckets(HashMap<String, ArrayList<ArrayList<Peptide>>> bucket,BufferedWriter out_prot) throws Exception{
 		int totalEntries = bucket.size();
-		System.out.println(" Total common peptides in bucket = " + totalEntries);
+		String writeContent = "\n Total common peptides in bucket = " + totalEntries;
+		out_prot.write(writeContent);
+		System.out.println(writeContent);
 	}
 	
 	/**
 	 * For unique peptides
+	 * 
 	 * @param bucket
+	 * @param out_prot
+	 * @throws Exception
 	 */
-	void analyzeBuckets_unique(HashMap<String, ArrayList<Peptide>> bucket){
+	void analyzeBuckets_unique(HashMap<String, ArrayList<Peptide>> bucket,BufferedWriter out_prot) throws Exception{
 		int totalEntries = bucket.size();
-		System.out.println(" Total unique peptides in bucket = " + totalEntries);
+		String writeContent = " Total unique peptides in bucket = " + totalEntries;
+		out_prot.write(writeContent);
+		System.out.println(writeContent);
 	}
 	
-	
+	/**
+	 * 
+	 * @param uniqueBucket
+	 * @param noOfSpectrumThreshold
+	 * @param out_prot
+	 * @throws Exception
+	 */
 	void howManyPeptidesWithGivenNumberOfMatchedSpectrum(HashMap<String, ArrayList<Peptide>> uniqueBucket,
-						int noOfSpectrumThreshold){
+						int noOfSpectrumThreshold,BufferedWriter out_prot) throws Exception{
 		
 		Iterator<String> pepSeqColl = uniqueBucket.keySet().iterator();
 		while(pepSeqColl.hasNext()){
@@ -178,14 +196,39 @@ public class DiscoverPeptidesAcrossDiffernetModels {
 			}
 			
 			if(specColl.size() >= noOfSpectrumThreshold){
-				System.out.println("Total Spec count = " + specColl.size() + "\t Seq = " + pepSeq);
+				String writeContent = "\n Total Spec count = " + specColl.size() + "\t Seq = " + pepSeq;
+				out_prot.write(writeContent);
+				System.out.println(writeContent);
 			}
 		}
 		
 	}
 	
+	/**
+	 * List own peptides in a given PeptideMap
+	 * @param peptideMap
+	 * @param out_prot
+	 * @throws Exception
+	 */
+	void listTotalPeptidesInAMap(HashMap <String, ArrayList<Peptide>> peptideMap,BufferedWriter out_prot) throws Exception{
+		Iterator<String> pepSeqs = peptideMap.keySet().iterator();
+		while(pepSeqs.hasNext())
+			out_prot.write("\n" + pepSeqs.next());
+	}
 	
-	public static void main(String [] args){
+	void listTotalPeptidesInAMap_passingThreshold(HashMap <String, ArrayList<Peptide>> peptideMap,BufferedWriter out_prot, double fdrThreshold) throws Exception{
+		Iterator<String> pepSeqs = peptideMap.keySet().iterator();
+		while(pepSeqs.hasNext()){
+			String seq = pepSeqs.next();
+			for(Peptide p : peptideMap.get(seq)){
+				if (p.fdr <= fdrThreshold)
+					out_prot.write("\n" + seq);
+					break;
+			}
+		}
+	}
+	
+	public static void main(String [] args) throws Exception{
 		
 		String summaryFile_official = args[0];
 		String summaryFile_augustus = args[1];
@@ -194,37 +237,66 @@ public class DiscoverPeptidesAcrossDiffernetModels {
 		String delimiter = args[4];
 		String decoyString = args[5];
 		
+		String outputFile = args[6];
+		
+		BufferedWriter out_prot = new BufferedWriter(new FileWriter(outputFile));
+		
 		DiscoverPeptidesAcrossDiffernetModels dp = new DiscoverPeptidesAcrossDiffernetModels();
 		dp.findCommonPeptidesAcrossModels(summaryFile_official, summaryFile_augustus, summaryFile_glimmer, fdrThreshold, delimiter, decoyString);
 		
 		System.out.println("\n Bucket - Official + Augustus");
-		dp.analyzeBuckets(dp.bucket_official_augustus);
+		out_prot.write("\n Bucket - Official + Augustus");
+		dp.analyzeBuckets(dp.bucket_official_augustus,out_prot);
 		
 		System.out.println("\n Bucket - Official + Glimmer");
-		dp.analyzeBuckets(dp.bucket_official_glimmer);
+		out_prot.write("\n Bucket - Official + Glimmer");
+		dp.analyzeBuckets(dp.bucket_official_glimmer,out_prot);
 		
 		System.out.println("\n Bucket - Augustus + Glimmer");
-		dp.analyzeBuckets(dp.bucket_agustus_glimmer);
+		out_prot.write("\n Bucket - Augustus + Glimmer");
+		dp.analyzeBuckets(dp.bucket_agustus_glimmer,out_prot);
 		
 		System.out.println("\n Bucket - Official + Augustus + Glimmer");
-		dp.analyzeBuckets(dp.bucket_official_augustus_glimmer);
+		out_prot.write("\n Bucket - Official + Augustus + Glimmer");
+		dp.analyzeBuckets(dp.bucket_official_augustus_glimmer,out_prot);
 		
 		System.out.println("\n Bucket - Unique Official ");
-		dp.analyzeBuckets_unique(dp.bucket_unique_official);
+		out_prot.write("\n Bucket - Unique Official ");
+		dp.analyzeBuckets_unique(dp.bucket_unique_official,out_prot);
 		
 		System.out.println("\n Bucket - Unique Augustus ");
-		dp.analyzeBuckets_unique(dp.bucket_unique_augustus);
+		out_prot.write("\n Bucket - Unique Augustus ");
+		dp.analyzeBuckets_unique(dp.bucket_unique_augustus,out_prot);
 		
 		System.out.println("\n Bucket - Unique Glimmer ");
-		dp.analyzeBuckets_unique(dp.bucket_unique_glimmer);
+		out_prot.write("\n Bucket - Unique Glimmer ");
+		dp.analyzeBuckets_unique(dp.bucket_unique_glimmer,out_prot);
 		
 		int spectrumCountThreshold = 2;
 		
 		System.out.println(" Details of extra peptides found  ** Augustus ");
-		dp.howManyPeptidesWithGivenNumberOfMatchedSpectrum(dp.bucket_unique_augustus, spectrumCountThreshold);
+		out_prot.write(" \n\n Details of extra peptides found  ** Augustus ");
+		dp.howManyPeptidesWithGivenNumberOfMatchedSpectrum(dp.bucket_unique_augustus, spectrumCountThreshold,out_prot);
 		
 		System.out.println("\n\n\n Details of extra peptides found  ** Glimmer ");
-		dp.howManyPeptidesWithGivenNumberOfMatchedSpectrum(dp.bucket_unique_glimmer, spectrumCountThreshold);
+		out_prot.write("\n\n\n Details of extra peptides found  ** Glimmer ");
+		dp.howManyPeptidesWithGivenNumberOfMatchedSpectrum(dp.bucket_unique_glimmer, spectrumCountThreshold,out_prot);
 		
+		/*
+		out_prot.write("\n\n\n Glimmer PeptideMap Sequences(All)");
+		dp.listTotalPeptidesInAMap(dp.peptideMap_glimmer, out_prot);
+		
+		out_prot.write("\n\n\n Augustus PeptideMap Sequences(All)");
+		dp.listTotalPeptidesInAMap(dp.peptideMap_augustus, out_prot);
+		
+		
+		out_prot.write("\n\n\n Augustus PeptideMap Sequence (<= fdr)");
+		dp.listTotalPeptidesInAMap_passingThreshold(dp.peptideMap_augustus, out_prot, fdrThreshold);
+		
+		out_prot.write("\n\n\n Glimmer PeptideMap Sequence (<= fdr)");
+		dp.listTotalPeptidesInAMap_passingThreshold(dp.peptideMap_glimmer, out_prot, fdrThreshold);
+		*/
+		
+		out_prot.close();
 	}
 }
