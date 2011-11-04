@@ -215,19 +215,7 @@ public class DiscoverPeptidesAcrossDiffernetModels {
 		while(pepSeqs.hasNext())
 			out_prot.write("\n" + pepSeqs.next());
 	}
-	
-	void listTotalPeptidesInAMap_passingThreshold(HashMap <String, ArrayList<Peptide>> peptideMap,BufferedWriter out_prot, double fdrThreshold) throws Exception{
-		Iterator<String> pepSeqs = peptideMap.keySet().iterator();
-		while(pepSeqs.hasNext()){
-			String seq = pepSeqs.next();
-			for(Peptide p : peptideMap.get(seq)){
-				if (p.fdr <= fdrThreshold)
-					out_prot.write("\n" + seq);
-					break;
-			}
-		}
-	}
-	
+		
 	public static void main(String [] args) throws Exception{
 		
 		String summaryFile_official = args[0];
@@ -282,20 +270,15 @@ public class DiscoverPeptidesAcrossDiffernetModels {
 		out_prot.write("\n\n\n Details of extra peptides found  ** Glimmer ");
 		dp.howManyPeptidesWithGivenNumberOfMatchedSpectrum(dp.bucket_unique_glimmer, spectrumCountThreshold,out_prot);
 		
-		/*
+		
 		out_prot.write("\n\n\n Glimmer PeptideMap Sequences(All)");
 		dp.listTotalPeptidesInAMap(dp.peptideMap_glimmer, out_prot);
 		
 		out_prot.write("\n\n\n Augustus PeptideMap Sequences(All)");
 		dp.listTotalPeptidesInAMap(dp.peptideMap_augustus, out_prot);
-		
-		
-		out_prot.write("\n\n\n Augustus PeptideMap Sequence (<= fdr)");
-		dp.listTotalPeptidesInAMap_passingThreshold(dp.peptideMap_augustus, out_prot, fdrThreshold);
-		
-		out_prot.write("\n\n\n Glimmer PeptideMap Sequence (<= fdr)");
-		dp.listTotalPeptidesInAMap_passingThreshold(dp.peptideMap_glimmer, out_prot, fdrThreshold);
-		*/
+				
+		out_prot.write("\n\n\n Official PeptideMap Sequences(All)");
+		dp.listTotalPeptidesInAMap(dp.peptideMap_official, out_prot);
 		
 		out_prot.close();
 	}
