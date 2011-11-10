@@ -1,5 +1,9 @@
 package uk.ac.liverpool.analysis;
-
+/**
+ * Take files from all the three models and search for mapping and non=mapping peptides
+ * found in different combination of models. This class also allows for filtering of peptides
+ * based on a provided FDR threshold
+ */
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
