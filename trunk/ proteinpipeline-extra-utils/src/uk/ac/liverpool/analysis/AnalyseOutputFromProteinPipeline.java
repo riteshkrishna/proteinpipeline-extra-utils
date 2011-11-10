@@ -225,7 +225,7 @@ public class AnalyseOutputFromProteinPipeline {
 	}
 	
 	/**
-	 * Get the Proteins with unique peptide sequences 
+	 * Get the Proteins matching only one and only one peptide 
 	 * @return - HashMap with Protein Accn and peptide sequence
 	 */
 	public HashMap<String,String> getProteinsWithUniquePeptideSequences(){
@@ -446,7 +446,7 @@ public class AnalyseOutputFromProteinPipeline {
 		
 		System.out.println("Total N-Terminals found = " + ap.getN_TerminalPeptides().get(0).size());
 		
-		System.out.println(" Total proteins with UNIQUE peptides found = " + ap.getProteinsWithUniquePeptideSequences().size());
+		System.out.println(" Total proteins with matching only one peptide = " + ap.getProteinsWithUniquePeptideSequences().size());
 		
 		
 		/***************  Create PAGS **********************/
