@@ -134,19 +134,6 @@ public class ParseSignalPResultFromToxoDB {
 			LinkedList<String> hmm_list = new LinkedList<String>(hmm_keys);
 			ArrayList<String> genes_hmm = new ArrayList<String>(hmm_list);
 			
-			/*
-			ArrayList<String> genes_nn = new ArrayList<String>();
-			ArrayList<String> genes_hmm = new ArrayList<String>();
-			
-			Iterator<String> nn_keys = geneMap_NN.keySet().iterator();
-			while(nn_keys.hasNext())
-				genes_nn.add(nn_keys.next());
-			
-			Iterator<String> hmm_keys = geneMap_HMM.keySet().iterator();
-			while(hmm_keys.hasNext())
-				genes_hmm.add(hmm_keys.next());
-			*/
-			
 			// Get Protein Sequences from Fasta File
 			FastaSequenceReader fsr = new FastaSequenceReader(this.fastaInputFile);
 			HashMap<String, String> collection_NN = fsr.getSequence(genes_nn);
@@ -154,6 +141,7 @@ public class ParseSignalPResultFromToxoDB {
 			
 			System.out.println(" Total NN Protein queried = " + genes_nn.size() + " Total HMM Protein queried = " + genes_hmm.size());
 			System.out.println(" Total NN Protein found = " + collection_NN.size() + " Total HMM Protein found = " + collection_HMM.size());
+			System.out.println("Press Enter...");
 			System.in.read();
 			
 			// Remove signal-peptides from Protein sequences - For NN
@@ -288,11 +276,11 @@ public class ParseSignalPResultFromToxoDB {
 	 */
 	public static void main(String[] args) {
 		
-		String signalPFileName = args[0];
-		String fastaFile = args[1];
-		String outputFasta_NN = args[2]; 
-		String outputFasta_HMM = args[3];
-		double score_threshold = Double.parseDouble(args[4]);
+		String signalPFileName = args[0]; // TSV for Signal-P from ToxoDB
+		String fastaFile = args[1];			// FASTA file of accessions in TSV file
+		String outputFasta_NN = args[2]; 	// FASTA for Neural Nets after removing signal peptides
+		String outputFasta_HMM = args[3];   // FASTA for HMMs after removing signal peptides
+		double score_threshold = Double.parseDouble(args[4]); // cut-off threshold for NN and HM scores
 		
 		ParseSignalPResultFromToxoDB ptb = new ParseSignalPResultFromToxoDB(signalPFileName,fastaFile);
 		ptb.processSignalP_File(outputFasta_NN, outputFasta_HMM,score_threshold);
