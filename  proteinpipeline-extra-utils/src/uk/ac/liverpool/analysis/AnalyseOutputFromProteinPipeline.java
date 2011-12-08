@@ -270,17 +270,25 @@ public class AnalyseOutputFromProteinPipeline {
 			String pepSeq = pepKey.next();
 			ArrayList<Peptide> pepColl = peptideMap.get(pepSeq);
 			
+			// We must void the same peptide+Protein combination even if they come from different
+			// spectrums. We should keep only the unique peptide+protein combination
+			HashMap<String, String> seenProteinAccn = new HashMap<String,String>();
+			
 			for (int i = 0; i < pepColl.size(); i++){
-				if( (pepColl.get(i).start == 1 ) || (pepColl.get(i).start == 2 )){
-					pepSeqCollection.add(pepSeq);
-					protAccnCollection.add(pepColl.get(i).protAccn);
-					startCollection.add(Integer.toString(pepColl.get(i).start));
+				String protAccn = pepColl.get(i).protAccn;
+				if(seenProteinAccn.containsKey(protAccn)){
+					continue;
+				}else if( (pepColl.get(i).start == 1 ) || (pepColl.get(i).start == 2 )){
+						seenProteinAccn.put(protAccn, "");
+						pepSeqCollection.add(pepSeq);
+						protAccnCollection.add(protAccn);
+						startCollection.add(Integer.toString(pepColl.get(i).start));
 				}
 			}
 		}
 		
 		nTerminals.add(pepSeqCollection);
-		nTerminals.add(pepSeqCollection);
+		nTerminals.add(protAccnCollection);
 		nTerminals.add(startCollection);
 		
 		return nTerminals;
@@ -385,7 +393,29 @@ public class AnalyseOutputFromProteinPipeline {
 			
 			out_prot.close();
 		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 
+	 * @param nTerminal
+	 * @param trueProteinListOutputFile
+	 */
+	public void writeNTerminalsToFile(ArrayList<ArrayList<String>> nTerminal, String nTerminalOutputFile){
+		try{
+			BufferedWriter out_prot = new BufferedWriter(new FileWriter(nTerminalOutputFile));
 			
+			ArrayList<String> pepSeqCollection   = nTerminal.get(0);
+			ArrayList<String> protAccnCollection = nTerminal.get(1);
+			ArrayList<String> startCollection    = nTerminal.get(2);
+			
+			for(int i = 0; i < pepSeqCollection.size(); i++)	
+				out_prot.write("\n" + protAccnCollection.get(i) + "\t" + pepSeqCollection.get(i) + "\t" + startCollection.get(i));
+			
+			out_prot.close();
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 	
@@ -458,6 +488,10 @@ public class AnalyseOutputFromProteinPipeline {
 		/************** Write details of true proteins ***************/
 		String trueProteinListOutputFile = "result/TRUE_PROTEINS_" + Double.toString(fdrThreshold);
 		ap.writeProteinsToFile(ap.getTrueProteins_filteredOnNumberOfPeptides(noOfPeptideThreshold),  trueProteinListOutputFile);
+		
+		/***************** Write the N-terminal details ****************/
+		String nTerminalOutputFile = "result/N-Terminal_" + Double.toString(fdrThreshold);
+		ap.writeNTerminalsToFile(ap.getN_TerminalPeptides(), nTerminalOutputFile);
 		
 		}catch(Exception e){
 			e.printStackTrace();
