@@ -276,7 +276,9 @@ public class AnalyseOutputFromProteinPipeline {
 			
 			for (int i = 0; i < pepColl.size(); i++){
 				String protAccn = pepColl.get(i).protAccn;
-				if(seenProteinAccn.containsKey(protAccn)){
+				
+				// Filter the seen Proteins or Decoy Proteins
+				if(seenProteinAccn.containsKey(protAccn) || protAccn.contains(decoyString)){
 					continue;
 				}else if( (pepColl.get(i).start == 1 ) || (pepColl.get(i).start == 2 )){
 						seenProteinAccn.put(protAccn, "");
