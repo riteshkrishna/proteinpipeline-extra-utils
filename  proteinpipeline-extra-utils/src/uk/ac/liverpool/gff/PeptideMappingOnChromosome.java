@@ -63,7 +63,15 @@ public class PeptideMappingOnChromosome {
 					  
 					  String[]  co_ords = gffHandle.mapToGff(p);
 					  
-					  out.write(co_ords[2] + "\t" + co_ords[0] + "\t" + co_ords[1] + "\t" + peptideSequence + "\t" + accession);
+					  // Take care of the negative strand reporting in GFF
+					  long start_map = Long.parseLong(co_ords[0]);
+					  long end_map  =  Long.parseLong(co_ords[1]);
+					  if(end_map < start_map){
+						  long tmp = start_map;
+						  start_map = end_map;
+						  end_map = tmp;
+					  }
+					  out.write(co_ords[2] + "\t" + start_map + "\t" + end_map + "\t" + peptideSequence + "\t" + accession + "\n");
 				}
 				
 				scanner.close();
@@ -81,11 +89,11 @@ public class PeptideMappingOnChromosome {
 	  * @throws Exception
 	  */
 	 public static void main(String [] args) throws Exception{
-		 //args[0] = 
-	     String gffFile = args[0]; 
-	     String peptideFile = args[1]; 
-	     String delimiter = args[3];
-	     String outFile = args[4];
+		 
+	     String gffFile = "tmp/Augustus_1D.gff"; 
+	     String peptideFile = "tmp/peptide-example.txt"; 
+	     String delimiter = "\t";
+	     String outFile = "tmp/mapout.txt";
 	     
 		 PeptideMappingOnChromosome pc = new PeptideMappingOnChromosome(gffFile, peptideFile, delimiter);
 		 pc.performMapping(outFile);
