@@ -15,6 +15,13 @@ import uk.ac.liverpool.analysis.AnalysePeptidesAcrossExperiments;
  * It will then produce a combined result as what was the count of peptides for each protein, and what was the 
  * location of those proteins on the chromosomes.
  * 
+ * Example usage :
+ * Official toxo data -
+ * /Users/riteshk/Ritesh_Work/Dropbox-PipelineResultsPvtCopy/Toxo/Toxo_official_Results/ToxoOfficial_SummaryFiles/WholeSummary_1D.txt /Users/riteshk/Ritesh_Work/Dropbox-PipelineResultsPvtCopy/Toxo/Toxo_official_Results/ToxoOfficial_SummaryFiles/WholeSummary_2D.txt /Users/riteshk/Ritesh_Work/Dropbox-PipelineResultsPvtCopy/Toxo/Toxo_official_Results/ToxoOfficial_SummaryFiles/WholeSummary_sf.txt /Users/riteshk/Ritesh_Work/Dropbox-PipelineResultsPvtCopy/Toxo/Toxo_official_Results/ToxoOfficial_SummaryFiles/WholeSummary_mudpitOfficial.txt /Users/riteshk/Ritesh_Work/Dropbox-PipelineResultsPvtCopy/Toxo/Toxo_Orbitrap/Official/Dong/WholeSummary_Dong_orbitrap_official.txt /Users/riteshk/Ritesh_Work/Dropbox-PipelineResultsPvtCopy/Toxo/Toxo_Orbitrap/Official/Sanya/WholeSummarySanyaOrbitrap_official.txt
+ * Also, set the following in the code -
+ * 		String gffInput = "/Users/riteshk/Ritesh_Work/Dropbox-PipelineResultsPvtCopy/Toxo/Toxo_official_Results/ToxoOfficial_GFF_produced/Toxo_1D_GFF_newoutput.gff";
+ *		String model = "official";
+ *	
  * @author riteshk
  *
  */
@@ -28,16 +35,16 @@ public class GffAndPeptideFileCombo {
 		String decoyString = "Rnd";
 		
 		// ** For Official model
-		//String gffInput = "/Users/riteshk/Ritesh_Work/Dropbox-PipelineResultsPvtCopy/Toxo/Toxo_official_Results/ToxoOfficial_GFF_produced/Toxo_1D_GFF_newoutput.gff";
-		//String model = "official";
+		String gffInput = "/Users/riteshk/Ritesh_Work/Neo/NeoDB/NeosporaCaninum_ToxoDB-7.0.gff";
+		String model = "official";
 		
 		// ** For Augustus model
 		//String gffInput = "/Users/riteshk/Ritesh_Work/Dropbox-PipelineResultsPvtCopy/Toxo/Toxo_Augustus/Toxo_Augustus/Augustus_1D.gff";
 		//String model = "augustus";
 		
 		// ** For Glimmer model
-		String gffInput = "/Users/riteshk/Ritesh_Work/Toxo/Toxo_Predictions_Glimmer/gffwithfasta/GFF_Processed/All-Glimmer-ME49.gff";
-		String model = "glimmer";
+		//String gffInput = "/Users/riteshk/Ritesh_Work/Toxo/Toxo_Predictions_Glimmer/gffwithfasta/GFF_Processed/All-Glimmer-ME49.gff";
+		//String model = "glimmer";
 		
 		String outputFile = "result/Gene-Peptide.txt";
 		
