@@ -455,7 +455,7 @@ public class AnalyseOutputFromProteinPipeline {
 		String delimiter = args[2];
 		String decoyString = args[3];
 		
-		int noOfPeptideThreshold = 2; // Used for filtering proteins based on number of peptides
+		int noOfPeptideThreshold = 1; // Used for filtering proteins based on number of peptides
 		
 		AnalyseOutputFromProteinPipeline ap = new AnalyseOutputFromProteinPipeline(pipelineSummaryFile, fdrThreshold, delimiter,decoyString);
 		ap.createMaps();
@@ -470,15 +470,17 @@ public class AnalyseOutputFromProteinPipeline {
 		// Get Number of True proteins
 		System.out.println("Total TRUE Proteins Found = " + ap.getTrueProteins().size());
 		
-		// Get Number of Proteins - with atleast 2 peptide criteria
-		System.out.println(" Total TRUE Proteins with 2 PEPTIDE threshold = " + ap.getTrueProteins_filteredOnNumberOfPeptides(noOfPeptideThreshold).size());
+		// Get Number of Proteins - with atleast given peptide threshold criteria
+		System.out.println(" Total TRUE Proteins with " + noOfPeptideThreshold + " PEPTIDE threshold = " + ap.getTrueProteins_filteredOnNumberOfPeptides(noOfPeptideThreshold).size());
 		
 		// Get Number of Decoy proteins
 		System.out.println( "Total DECOY Proteins Found = " + ap.getDecoyProteins().size());
 		
 		System.out.println("Total N-Terminals found = " + ap.getN_TerminalPeptides().get(0).size());
 		
-		System.out.println(" Total proteins with matching only one peptide = " + ap.getProteinsWithUniquePeptideSequences().size());
+		System.out.println(" Total proteins with matching only one peptide(** Warning - it doesn't filter" +
+				" for decoy proteins...just counts everything above threshold = " 
+				+ ap.getProteinsWithUniquePeptideSequences().size());
 		
 		
 		/***************  Create PAGS **********************/
