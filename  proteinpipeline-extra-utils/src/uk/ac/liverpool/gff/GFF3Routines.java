@@ -21,9 +21,9 @@ import java.util.Iterator;
  */
 public class GFF3Routines {
 
-	HashMap<String, ArrayList<CDS_Information>> cdsRecords;
-	HashMap<String, Gene_Information> geneRecords;
-	HashMap<String, ArrayList<Peptide_Information>> peptideRecords;
+	public HashMap<String, ArrayList<CDS_Information>> cdsRecords;
+	public HashMap<String, Gene_Information> geneRecords;
+	public HashMap<String, ArrayList<Peptide_Information>> peptideRecords;
 	
 	public GFF3Routines(){
 		cdsRecords = new HashMap<String, ArrayList<CDS_Information>>();
