@@ -1,0 +1,66 @@
+Command line arguments for different runs -
+
+Toxoplasma LC-MS (Official model)
+-----------------------------
+
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Official/WholeSummary_mudpitOfficial.txt 0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Official/WholeSummary_2D.txt 0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Official/WholeSummary_sf.txt 0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Official/WholeSummary_1D.txt 0.01 \t Rnd
+
+
+Toxoplasma LC-MS (Augustus model)
+-----------------------------
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Augustus/WholeSummaryToxoAugustus_mudpit_solAndInsol.txt 0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Augustus/WholeSummary_SFIF_augustus.txt  0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Augustus/WholeSummary_2D_augustus.txt  0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Augustus/WholeSummary_1D_augustus.txt  0.01 \t Rnd
+
+Toxoplasma LC-MS (Glimmer model)
+-----------------------------
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Glimmer/WholeSummary_Mudpit_glimmer.txt 0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Glimmer/WholeSummary_SFIF_glimmer.txt 0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Glimmer/WholeSummary_2D_glimmer.txt 0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Glimmer/WholeSummary_1D_glimmer.txt 0.01 \t Rnd
+
+Toxoplasma Orbitrap (Official model)
+--------------------------------------
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Orbitrap/Official/Sanya/WholeSummarySanyaOrbitrap_official.txt 0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Orbitrap/Official/Dong/WholeSummary_Dong_orbitrap_official.txt 0.01 \t Rnd
+
+Toxoplasma Orbitrap (Augustus model)
+--------------------------------------
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Orbitrap/Augustus/Sanya/WholeSummarySanyaAugustus.txt 0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Orbitrap/Augustus/Dong/WholeSummaryToxoOrbitrapAugustus.txt  0.01 \t Rnd
+
+Toxoplasma Orbitrap (Glimmer model)
+--------------------------------------
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Orbitrap/Glimmer/Dong/WholeSummary_dong_glimmer.txt 0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Orbitrap/Glimmer/Sanya/WholeSumary_sanya_glimmer.txt 0.01 \t Rnd
+
+Neospora (Official model)
+---------------------------
+/Users/riteshk/Ritesh_Work/Neo/Results_Pipeline/Neo_orbitrap/official/Dong/WholeSummaryDongNeo.txt  0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Neo/Results_Pipeline/Neo_orbitrap/official/Sarah/WholeSummarySarah_10Of12.txt  0.01 \t Rnd
+
+
+Neospora (Augustus model)
+---------------------------
+/Users/riteshk/Ritesh_Work/Neo/Results_Pipeline/Neo_orbitrap/augustus/Dong/WholeSummaryDong_augustus.txt  0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Neo/Results_Pipeline/Neo_orbitrap/augustus/Sarah/WholeSummarySarah_10Of12_augustus.txt  0.01 \t Rnd
+
+Neospora (Glimmer model)
+---------------------------
+/Users/riteshk/Ritesh_Work/Neo/Results_Pipeline/Neo_orbitrap/Glimmer/Dong/WholeSummary_Dong_glimmer.txt  0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Neo/Results_Pipeline/Neo_orbitrap/Glimmer/Sarah/WholeSummary_sarah10of12_glimmer.txt  0.01 \t Rnd
+
+Crypto (Official model)
+-----------------------------
+/Users/riteshk/Ritesh_Work/Crypto/Results_Pipeline/WholeSummary_cell_lysate.txt 0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Crypto/Results_Pipeline/WholeSummary_apical.txt 0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Crypto/Results_Pipeline/WholeSummary_pH3-10-NL.txt 0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Crypto/Results_Pipeline/WholeSummary_pH3-10.txt 0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Crypto/Results_Pipeline/WholeSummary_4-7-gel2.txt 0.01 \t Rnd
+/Users/riteshk/Ritesh_Work/Crypto/Results_Pipeline/WholeSummary_4-7-chap.txt 0.01 \t Rnd
+
+
