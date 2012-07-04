@@ -1,0 +1,20 @@
+
+Toxo Mudpit -
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Official/WholeSummary_mudpitOfficial.txt /Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Augustus/WholeSummaryToxoAugustus_mudpit_solAndInsol.txt /Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Glimmer/WholeSummary_Mudpit_glimmer.txt  0.01 \t Rnd result/outputDiscoverPeptide_mudpit.txt
+
+Toxo 1D
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Official/WholeSummary_1D.txt /Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Augustus/WholeSummary_1D_augustus.txt /Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Glimmer/WholeSummary_1D_glimmer.txt  0.01 \t Rnd result/outputDiscoverPeptide_1D.txt
+
+Toxo 2D
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Official/WholeSummary_2D.txt /Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Augustus/WholeSummary_2D_augustus.txt /Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Glimmer/WholeSummary_2D_glimmer.txt  0.01 \t Rnd result/outputDiscoverPeptide_2D.txt
+
+Toxo_SFIF
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Official/WholeSummary_sf.txt /Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Augustus/WholeSummary_SFIF_augustus.txt /Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Glimmer/WholeSummary_SFIF_glimmer.txt  0.01 \t Rnd result/outputDiscoverPeptide_SFIF.txt
+
+Toxo Orbitrap Dong
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Orbitrap/Official/Dong/WholeSummary_Dong_orbitrap_official.txt /Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Orbitrap/Augustus/Dong/WholeSummaryToxoOrbitrapAugustus.txt /Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Orbitrap/Glimmer/Dong/WholeSummary_dong_glimmer.txt   0.01 \t Rnd result/outputDiscoverPeptide_OrbitrapDong.txt
+
+ 
+Toxo Orbitrap Sanya
+/Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Orbitrap/Official/Sanya/WholeSummarySanyaOrbitrap_official.txt /Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Orbitrap/Augustus/Sanya/WholeSummarySanyaAugustus.txt /Users/riteshk/Ritesh_Work/Toxo/Results_Pipeline/Toxo_Orbitrap/Glimmer/Sanya/WholeSumary_sanya_glimmer.txt   0.01 \t Rnd result/outputDiscoverPeptide_OrbitrapSanya.txt
+ 
