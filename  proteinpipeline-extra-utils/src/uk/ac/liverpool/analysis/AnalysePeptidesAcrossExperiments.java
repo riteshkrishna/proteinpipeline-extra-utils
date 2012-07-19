@@ -36,6 +36,10 @@ public class AnalysePeptidesAcrossExperiments {
 	HashMap [] proteinPeptideMaps;
 	public HashMap<String, ArrayList<String>> allProteinsPeptides = new HashMap<String, ArrayList<String>>();
 	
+	// Adding more code for finding PeptideMaps as well - July 18, 2012
+	HashMap [] peptideMaps;
+	public HashMap <String, ArrayList<Peptide>> allPeptideMap = new HashMap <String, ArrayList<Peptide>>();;
+	
 	public AnalysePeptidesAcrossExperiments(String [] summaryFiles, double fdrThreshold, String delimiter,String decoyString) {
 		this.fdrThreshold = fdrThreshold;
 		this.delimiter = delimiter;
@@ -46,9 +50,13 @@ public class AnalysePeptidesAcrossExperiments {
 		pipelineSummaryFiles = new String[this.noOfExperiments];
 		proteinPeptideMaps = new HashMap[this.noOfExperiments];
 		
+		peptideMaps = new HashMap[this.noOfExperiments];
+		
 		for (int i=0; i< noOfExperiments; i++){
 			pipelineSummaryFiles[i] = new String(summaryFiles[i]);
 			proteinPeptideMaps[i] = new HashMap<String, ArrayList<String>>();
+			
+			peptideMaps[i] = new HashMap<String, ArrayList<Peptide>>();
 		}
 	}
 	
@@ -79,6 +87,10 @@ public class AnalysePeptidesAcrossExperiments {
 			}
 			
 			proteinPeptideMaps[i] = protMap_copy;
+			
+			// for PeptideMaps 
+			HashMap <String, ArrayList<Peptide>> pepMapForThisExp = new HashMap<String, ArrayList<Peptide>>(ap.peptideMap);
+			peptideMaps[i] = pepMapForThisExp;
 		}	
 	}
 	
@@ -111,6 +123,35 @@ public class AnalysePeptidesAcrossExperiments {
 		}
 		
 	}
+	
+	// Added to collect information about Peptide objects - July 18, 2012
+	public void createCompletePeptideMapForAllExperiments(){
+		
+		constructPeptideMaps();
+		
+		for(int i = 0 ; i < noOfExperiments; i++){
+			HashMap<String, ArrayList<Peptide>>  thisExp = peptideMaps[i];
+			Iterator<String> pepseqs = thisExp.keySet().iterator();
+		
+			while(pepseqs.hasNext()){
+				String pep = pepseqs.next();
+				ArrayList<Peptide> pepColl = thisExp.get(pep);
+				
+				if(allPeptideMap.containsKey(pep)){
+					ArrayList<Peptide> pepAlreadyFound = allPeptideMap.get(pep);
+					
+					for(Peptide p : pepColl)
+						pepAlreadyFound.add(p);
+					
+					allPeptideMap.put(pep, pepAlreadyFound);
+				}else{
+					allPeptideMap.put(pep, pepColl);
+				}
+			}
+		}
+		
+	}
+	
 	
 	/**
 	 * 
@@ -155,5 +196,6 @@ public class AnalysePeptidesAcrossExperiments {
 		System.out.println(aae.allProteinsPeptides.size());
 		
 		aae.writeProteinPeptideMapForAllExpInFile("result/Protein-Peptide-Count.txt");
+		
 	}
 }
