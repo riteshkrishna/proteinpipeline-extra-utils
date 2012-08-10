@@ -20,14 +20,16 @@ public class Classify_peptides_in_official_alternate {
 	public HashMap <String, ArrayList<Peptide>> official_peptideMap = new HashMap <String, ArrayList<Peptide>>();
 	public HashMap <String, ArrayList<Peptide>> augustus_peptideMap = new HashMap <String, ArrayList<Peptide>>();
 	public HashMap <String, ArrayList<Peptide>> glimmer_peptideMap = new HashMap <String, ArrayList<Peptide>>();
+	
 	/**
 	 * 
 	 * @param protein_Peptide_Count_File_official
 	 * @param protein_Peptide_Count_File_augutus
 	 * @param protein_Peptide_Count_File_glimmer
+	 * @param trypticPeptides
 	 */
 	public void classifyPeptides(String protein_Peptide_Count_File_official, String protein_Peptide_Count_File_augutus,
-			String protein_Peptide_Count_File_glimmer){
+			String protein_Peptide_Count_File_glimmer,HashSet<String> trypticPeptides){
 		
 		
 		Process_output_from_AnalysePeptidesAcrossExperiments pa_o = new Process_output_from_AnalysePeptidesAcrossExperiments(protein_Peptide_Count_File_official);
@@ -42,7 +44,7 @@ public class Classify_peptides_in_official_alternate {
 		peptides_glimmer = pa_g.getPeptideList();
 		System.out.println("Total Glimmer Peptides in file = " + peptides_glimmer.size());
 		
-		//--  Count alternate peptides-------------------------------//	
+	
 		//--  All alternate peptides-------------------------------//
 		// Add Augustus peptides
 		Iterator<String> pep_itr = peptides_augutus.iterator();
@@ -76,6 +78,33 @@ public class Classify_peptides_in_official_alternate {
 			String pep = pep_itr.next();
 			if(!peptides_glimmer.contains(pep))
 				peptides_augustus_only.add(pep);
+		}
+		//---------------------------------------------------------//
+		
+		//-------- Perform Tryptic cleaning here----------------------//
+		//if any of the alternate peptide belongs to trypticPeptides, then ignore that
+		HashSet<String> peptides_augustus_glimmer_only_copy = new HashSet<String>(peptides_augustus_glimmer_only);
+		Iterator<String >pepIterator = peptides_augustus_glimmer_only_copy.iterator();
+		while(pepIterator.hasNext()){
+			String pep = pepIterator.next();
+			if(trypticPeptides.contains(pep))
+				peptides_augustus_glimmer_only.remove(pep);
+		}
+		
+		HashSet<String> peptides_augustus_only_copy = new HashSet<String>(peptides_augustus_only);
+		pepIterator = peptides_augustus_only_copy.iterator();
+		while(pepIterator.hasNext()){
+			String pep = pepIterator.next();
+			if(trypticPeptides.contains(pep))
+				peptides_augustus_only.remove(pep);
+		}
+		
+		HashSet<String> peptides_glimmer_only_copy = new HashSet<String>(peptides_glimmer_only);
+		pepIterator = peptides_glimmer_only_copy.iterator();
+		while(pepIterator.hasNext()){
+			String pep = pepIterator.next();
+			if(trypticPeptides.contains(pep))
+				peptides_glimmer_only.remove(pep);
 		}
 		//---------------------------------------------------------//
 		
@@ -132,7 +161,11 @@ public class Classify_peptides_in_official_alternate {
 		String protein_Peptide_Count_File_augutus = new String("result/Protein-Peptide-Count-Augustus-toxo.txt");
 		String protein_Peptide_Count_File_glimmer = new String("result/Protein-Peptide-Count-Glimmer-toxo.txt");
 		
-		classifyPeptides(protein_Peptide_Count_File_official, protein_Peptide_Count_File_augutus, protein_Peptide_Count_File_glimmer);
+		String trypticFile = "result/Digested-Peptides-Toxo.txt";
+		TrypticPeptideReader tr = new TrypticPeptideReader(trypticFile);
+		HashSet<String> trypticPeptides = tr.getTrypticPeptides();
+		
+		classifyPeptides(protein_Peptide_Count_File_official, protein_Peptide_Count_File_augutus, protein_Peptide_Count_File_glimmer,trypticPeptides);
 		
 		String alternatePeptideFile = "result/Toxo-Peptide-Augustus-Glimmer.txt";
 		String officialPeptideFile = "result/Toxo-Peptide-Official.txt";
@@ -147,7 +180,11 @@ public class Classify_peptides_in_official_alternate {
 		String protein_Peptide_Count_File_augutus = new String("result/Protein-Peptide-Count-augustus-neo.txt");
 		String protein_Peptide_Count_File_glimmer = new String("result/Protein-Peptide-Count-glimmer-neo.txt");
 		
-		classifyPeptides(protein_Peptide_Count_File_official, protein_Peptide_Count_File_augutus, protein_Peptide_Count_File_glimmer);
+		String trypticFile = "result/Digested-Peptides-Neo.txt";
+		TrypticPeptideReader tr = new TrypticPeptideReader(trypticFile);
+		HashSet<String> trypticPeptides = tr.getTrypticPeptides();
+		
+		classifyPeptides(protein_Peptide_Count_File_official, protein_Peptide_Count_File_augutus, protein_Peptide_Count_File_glimmer,trypticPeptides);
 		
 		String alternatePeptideFile = "result/Neo-Peptide-Augustus-Glimmer.txt";
 		String officialPeptideFile = "result/Neo-Peptide-Official.txt";
@@ -253,10 +290,10 @@ public class Classify_peptides_in_official_alternate {
 	 */
 	public static void  main(String [] args){
 		
-		Classify_peptides_in_official_alternate cp= new Classify_peptides_in_official_alternate();
+		//Classify_peptides_in_official_alternate cp= new Classify_peptides_in_official_alternate();
 		
-		System.out.println("Toxo -" + "\n");
-		cp.perform_classification_Toxo();
+		//System.out.println("Toxo -" + "\n");
+		//cp.perform_classification_Toxo();
 		
 		/* ------------------------------------------------------------------ */
 		// -- Only for Toxo where we want to create circos plots ----//
@@ -273,9 +310,9 @@ public class Classify_peptides_in_official_alternate {
 		/* ------------------------------------------------------------------ */
 		
 		// For Neo Data - Comment out the above lines and run
-		//Classify_peptides_in_official_alternate cp-neo= new Classify_peptides_in_official_alternate();
-		//System.out.println("Neo -" + "\n");
-		//cp_neo.perform_classification_Neo();
+		Classify_peptides_in_official_alternate cp_neo= new Classify_peptides_in_official_alternate();
+		System.out.println("Neo -" + "\n");
+		cp_neo.perform_classification_Neo();
 		
 	}
 	

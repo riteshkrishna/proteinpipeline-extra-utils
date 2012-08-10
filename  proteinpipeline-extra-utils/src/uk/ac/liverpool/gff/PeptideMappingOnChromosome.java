@@ -10,7 +10,10 @@ import java.util.Scanner;
  * Program to map peptides on chromosome co-ordinates. We can use this file for circos drawings for
  * peptides identified from alternate models, and N-terminal discoveries.
  * 
- * Take a TSV file with fields [prot-accession peptide-seq start end]. Take the corresponding GFF3 file.
+ * Take a TSV file with fields [prot-accession peptide-seq start end], produced by 
+ * Classify_peptides_in_official_alternate.java 
+ * 
+ * Take the corresponding GFF3 file.
  * Map and produce a file with the fields -
  * [chromosome start(on chromosome) end(on chromosome) peptide-seq prot-accession]
  * 
@@ -61,21 +64,24 @@ public class PeptideMappingOnChromosome {
 					  
 					  ProteinPeptideObject p = new ProteinPeptideObject(accession, peptideSequence,start, end);
 					  String[]  co_ords = new String[2];
+					  long start_map,end_map;
+					  
 					  try{
 						  co_ords = gffHandle.mapToGff(p);
+					  
+						  // Take care of the negative strand reporting in GFF
+						  start_map = Long.parseLong(co_ords[0]);
+						  end_map  =  Long.parseLong(co_ords[1]);
+						  if(end_map < start_map){
+							  long tmp = start_map;
+							  start_map = end_map;
+							  end_map = tmp;
+					  		}
 					  }catch(Exception e){
 						  System.out.println("Exception - " + accession +" \t"+ peptideSequence +" \t"+ start +" \t"+ end);
-						  e.printStackTrace();
+						  //e.printStackTrace();
 						  //System.exit(0);
 						  continue;
-					  }
-					  // Take care of the negative strand reporting in GFF
-					  long start_map = Long.parseLong(co_ords[0]);
-					  long end_map  =  Long.parseLong(co_ords[1]);
-					  if(end_map < start_map){
-						  long tmp = start_map;
-						  start_map = end_map;
-						  end_map = tmp;
 					  }
 					  out.write(co_ords[2] + "\t" + start_map + "\t" + end_map + "\t" + peptideSequence + "\t" + accession + "\n");
 				}
@@ -96,11 +102,19 @@ public class PeptideMappingOnChromosome {
 	  */
 	 public static void main(String [] args) throws Exception{
 		 
+		 
 	     String gffFile = "tmp/new-Glimmer-ME49.gff"; 
-	     String peptideFile = "tmp/unique_glimmer_peptides.txt"; 
+	     String peptideFile = "result/Toxo-Glimmer-PeptideMap.txt"; 
 	     String delimiter = "\t";
-	     String outFile = "tmp/mapped_glimmer_peptides.txt";
+	     String outFile = "result/mapped_glimmer_peptides.txt";
 	     
+		 /*
+	     String gffFile = "tmp/Augustus_1D.gff"; 
+	     String peptideFile = "result/Toxo-Augustus-PeptideMap.txt"; 
+	     String delimiter = "\t";
+	     String outFile = "result/mapped_augustus_peptides.txt";
+	     */
+		 
 		 PeptideMappingOnChromosome pc = new PeptideMappingOnChromosome(gffFile, peptideFile, delimiter);
 		 pc.performMapping(outFile);
 		 
