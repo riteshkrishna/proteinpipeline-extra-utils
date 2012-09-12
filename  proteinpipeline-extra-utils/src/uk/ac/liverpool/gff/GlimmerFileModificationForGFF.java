@@ -4,9 +4,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * There are some incompatibilities with the GFF produced by Glimmer. The entries are as following -
@@ -44,22 +47,22 @@ public class GlimmerFileModificationForGFF {
 			HashMap<String, ArrayList<CDS_Information>> cdsRecords = gffHandle.cdsRecords;
 			HashMap<String, Gene_Information> geneRecords = gffHandle.geneRecords;
 			
-			 // based on ID key
-			 Iterator<String> geneIds = geneRecords.keySet().iterator();
-			 Iterator <String> cdsIds = cdsRecords.keySet().iterator();
-			 
+			// Need to sort the HashMap, otherwise will cause problem in replacing
+			List<String> geneIds = new ArrayList(geneRecords.keySet());
+			Collections.sort(geneIds,Collections.reverseOrder());
+			
+			List<String> cdsIds = new ArrayList(cdsRecords.keySet());
+			Collections.sort(cdsIds,Collections.reverseOrder());
+			  
 			 // Read the whole file text 
 			 String text = new Scanner( new File(glimmerFile) ).useDelimiter("\\A").next();
 			 
-			 while(geneIds.hasNext()){
-				 String geneId = geneIds.next();
+			 for(String geneId : geneIds){
 				 String new_geneId = geneId + ".t1";				 
 				 text = text.replace(geneId, new_geneId);
 			 }
 			 
-			 while(cdsIds.hasNext()){
-				 String cdsId = cdsIds.next();
-				 
+			 for(String cdsId : cdsIds){
 				// something here-gb|TGME49_chrIa.cds4.1 ->gb|TGME49_chrIa.path1.gene4
 				 String pattern = cdsId.substring(cdsId.lastIndexOf("cds")+3, cdsId.length()-1); //4.1
 				 String number = pattern.substring(0,pattern.indexOf(".")); //4
@@ -68,7 +71,6 @@ public class GlimmerFileModificationForGFF {
 				 String new_cds_id = preCds_tag + "path1.gene" + number;
 				 
 				 text = text.replace(cdsId, new_cds_id);
-				 
 			 }
 			 
 			 BufferedWriter writer = new BufferedWriter(new FileWriter(modifiedFile));
@@ -87,7 +89,10 @@ public class GlimmerFileModificationForGFF {
 	 */
 	public static void main(String [] args) throws Exception{
 		String glimmer_gff = "tmp/All-Glimmer-ME49.gff";
-		String new_glimmer = "tmp/new-Glimmer-ME49.gff";
+		String new_glimmer = "tmp/new-Glimmer-ME49-sept12.gff";
+		
+		//String glimmer_gff = "tmp/diagnostic-gff.txt";
+		//String new_glimmer = "tmp/diagnostic-gff-diag.txt";
 		
 		GlimmerFileModificationForGFF glm = new GlimmerFileModificationForGFF(glimmer_gff, new_glimmer);
 		glm.process();
