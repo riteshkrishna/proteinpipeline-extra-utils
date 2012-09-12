@@ -79,7 +79,7 @@ public class PeptideMappingOnChromosome {
 					  		}
 					  }catch(Exception e){
 						  System.out.println("Exception - " + accession +" \t"+ peptideSequence +" \t"+ start +" \t"+ end);
-						  //e.printStackTrace();
+						  e.printStackTrace();
 						  //System.exit(0);
 						  continue;
 					  }
@@ -102,18 +102,24 @@ public class PeptideMappingOnChromosome {
 	  */
 	 public static void main(String [] args) throws Exception{
 		 
-		 
+		 /*
 	     String gffFile = "tmp/new-Glimmer-ME49.gff"; 
-	     String peptideFile = "result/Toxo-Glimmer-PeptideMap.txt"; 
+	     String peptideFile = "tmp/all-PSM-glimmer-filtered.txt"; 
 	     String delimiter = "\t";
-	     String outFile = "result/mapped_glimmer_peptides.txt";
-	     
+	     String outFile = "tmp/all-PSM-glimmer-filtered-mapped.txt";
+	     */
 		 /*
 	     String gffFile = "tmp/Augustus_1D.gff"; 
-	     String peptideFile = "result/Toxo-Augustus-PeptideMap.txt"; 
+	     String peptideFile = "tmp/all-PSM-augustus-filtered.txt"; 
 	     String delimiter = "\t";
-	     String outFile = "result/mapped_augustus_peptides.txt";
+	     String outFile = "tmp/all-PSM-augustus-filtered-mapped.txt";
 	     */
+		 
+	     String gffFile = "tmp/Toxo_1D_OFF-modified.gff"; 
+	     String peptideFile = "result2/all-PSM-official-filtered.txt"; 
+	     String delimiter = "\t";
+	     String outFile = "result2/all-PSM-official-filtered-mapped.txt";
+	     
 		 
 		 PeptideMappingOnChromosome pc = new PeptideMappingOnChromosome(gffFile, peptideFile, delimiter);
 		 pc.performMapping(outFile);
